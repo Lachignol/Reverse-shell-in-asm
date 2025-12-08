@@ -42,6 +42,7 @@ etc,etc
 ## Espace d’adressage virtuel d’un processus.
 (système hybride réparti entre CPU, noyau et RAM.)
 
+´´´
 Programme ELF sur disque ──(execve)──> Noyau Linux
                             │
                             ▼
@@ -69,8 +70,7 @@ Programme ELF sur disque ──(execve)──> Noyau Linux
 ┌─────────────┐   ┌─────────────┐   ┌──────────────┐
 │ RIP → instr.│   │ Accès vars  │   │ RSP → pile   │  ← Registres CPU
 └─────────────┘   └─────────────┘   └──────────────┘
-
-
+´´´
 ## Schéma ASM pur (pas de libc)
 adresses basses ↑ adresses hautes
 ┌─────────────────┐
