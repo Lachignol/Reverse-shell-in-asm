@@ -12,23 +12,112 @@ Plus lisible (%,$ etc)
 - RODATA
 - TEXT
 
-## BSS = Section ou l'on stock les variables non initialise 
+## BSS
+stocke les variables globales et statiques non initialisées ou initialisées implicitement à zéro (ex. : `int age;` ou `char buffer[256];`). Le système initialise cette zone à zéro au chargement, sans occuper d’espace dans le fichier binaire.
 ex : 
 int age;
 char buffer [256];
 
 
-## RODATA = Section ou l'on stock les variables initialise
+## RODATA 
+contient les données en lecture seule comme les chaînes littérales et constantes statiques. Elle est protégée contre les écritures pour éviter les modifications accidentelles.
 ex:
 int age = 1337;
 char buffer[] = "Hello world"
 
-## TEXT = Section ou l'on stock tout le code qui va etre execute
+## DATA
+abrite les variables globales et statiques initialisées avec une valeur non nulle . Contrairement à .rodata, elle est modifiable en exécution.
+ex: 
+int age = 1337;
+char buffer[] = "Hello";
+
+
+## TEXT 
+regroupe le code machine exécutable, incluant fonctions, étiquettes et instructions. Cette section est en lecture/exécution mais non modifiable.
 ex:
 les etiquettes,
 les fonctions, 
 etc,etc
 
+## Espace d’adressage virtuel d’un processus.
+(système hybride réparti entre CPU, noyau et RAM.)
+
+Programme ELF sur disque ──(execve)──> Noyau Linux
+                            │
+                            ▼
+                 +──────────────────────+
+                 | Crée processus       |  ← Tables de pages (RAM)
+                 | CR3 ← table pages    |  ← Registre CPU (CR3)
+                 | ASLR randomise bases |
+                 +──────────────────────+
+                            │
+                            ▼
+              +───────────────────────────+
+              | MMU traduit virt→physique |  ← Hardware CPU (à chaque instr.)
+              +───────────────────────────+
+                            │
+                            ▼
+    +──────────────────────┼──────────────────────+
+    |                       │                      |
+    ▼                       ▼                      ▼
+┌─────────────┐   ┌─────────────┐   ┌──────────────┐
+│ .text/.rodata│   │ .data/.bss  │   │ heap/stack   │  ← RAM physique
+│ (code/const)│   │ (données)   │   │ (dyn/pile)   │
+└─────────────┘   └─────────────┘   └──────────────┘
+    │                       │                      │
+    ▼                       ▼                      ▼
+┌─────────────┐   ┌─────────────┐   ┌──────────────┐
+│ RIP → instr.│   │ Accès vars  │   │ RSP → pile   │  ← Registres CPU
+└─────────────┘   └─────────────┘   └──────────────┘
+
+
+## Schéma ASM pur (pas de libc)
+adresses basses ↑ adresses hautes
+┌─────────────────┐
+│     .text       │ Code (MOV,JMP,CALL...)
+├─────────────────┤
+│    .rodata      │ Constantes (DB "hello")
+├─────────────────┤
+│     .data       │ Données init (DD 42)
+├─────────────────┤
+│     .bss        │ Données non init (RESB 256→0)
+├─────────────────┤
+│      heap       │ brk/mmap manuel (optionnel)
+│   (↑croît)      │
+├─────────────────┤
+│     ...         │
+├─────────────────┤
+│     stack       │ RSP/RBP (PUSH/CALL ↓descend)
+│   (↓descend)    │
+└─────────────────┘
+
+ASM : tu contrôles tout. Heap/stack = syscalls manuelles.
+
+## Schéma C normal (avec libc)
+
+adresses basses ↑ adresses hautes
+┌─────────────────┐
+│     .text       │ Code compilé (fonctions)
+├─────────────────┤
+│    .rodata      │ Strings, const (printf("hello"))
+├─────────────────┤
+│     .data       │ Globals init (int x=42;)
+├─────────────────┤
+│     .bss        │ Globals non init (int y;)
+├─────────────────┤
+│   libc/.got/... │ Libc, PLT, GOT (appels dynamiques)
+├─────────────────┤
+│      heap       │ malloc(), calloc() (glibc gère)
+│   (↑croît)      │
+├─────────────────┤
+│ mmap(anon)...   │ Allocs dynamiques hautes
+├─────────────────┤
+│     ...         │
+├─────────────────┤
+│     stack       │ Variables locales, argc/argv
+│   (↓descend)    │
+└─────────────────┘
+C : runtime libc + crt0 initialisent stack/heap. Plus de sections (GOT, PLT) pour les appels dynamiques.
 
 # REGISTRE
 
