@@ -32,7 +32,7 @@ etc,etc
 
 # REGISTRE
 
-ESPACE dans la stack qui pointe ver une valeur (stock des donnees)
+ESPACE memoire sur le cpu lui meme qui pointe ver une valeur (stock des donnees)
 
 64 bits              32 bits         16 bits
 
