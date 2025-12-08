@@ -94,7 +94,7 @@ adresses basses ↑ adresses hautes
 │   (↓descend)    │
 └─────────────────┘
 ```
-ASM : tu contrôles tout. Heap/stack = syscalls manuelles.
+ASM : contrôles sur tout. Heap/stack = syscalls manuelles.
 
 ## Schéma C normal (avec libc)
 
