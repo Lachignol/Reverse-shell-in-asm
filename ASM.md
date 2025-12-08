@@ -42,7 +42,7 @@ etc,etc
 ## Espace d’adressage virtuel d’un processus.
 (système hybride réparti entre CPU, noyau et RAM.)
 
-´´´
+```
 Programme ELF sur disque ──(execve)──> Noyau Linux
                             │
                             ▼
@@ -70,8 +70,11 @@ Programme ELF sur disque ──(execve)──> Noyau Linux
 ┌─────────────┐   ┌─────────────┐   ┌──────────────┐
 │ RIP → instr.│   │ Accès vars  │   │ RSP → pile   │  ← Registres CPU
 └─────────────┘   └─────────────┘   └──────────────┘
-´´´
+```
+
 ## Schéma ASM pur (pas de libc)
+
+```
 adresses basses ↑ adresses hautes
 ┌─────────────────┐
 │     .text       │ Code (MOV,JMP,CALL...)
@@ -90,11 +93,12 @@ adresses basses ↑ adresses hautes
 │     stack       │ RSP/RBP (PUSH/CALL ↓descend)
 │   (↓descend)    │
 └─────────────────┘
-
+```
 ASM : tu contrôles tout. Heap/stack = syscalls manuelles.
 
 ## Schéma C normal (avec libc)
 
+```
 adresses basses ↑ adresses hautes
 ┌─────────────────┐
 │     .text       │ Code compilé (fonctions)
@@ -117,6 +121,7 @@ adresses basses ↑ adresses hautes
 │     stack       │ Variables locales, argc/argv
 │   (↓descend)    │
 └─────────────────┘
+```
 C : runtime libc + crt0 initialisent stack/heap. Plus de sections (GOT, PLT) pour les appels dynamiques.
 
 # REGISTRE
